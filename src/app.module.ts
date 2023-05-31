@@ -1,14 +1,20 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { SecurityController } from './security/security.controller';
-import { SecurityService } from './security/security.service';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { SecurityModule } from './security/security.module';
+import { JwtInterceptor } from './shared/jwtInterceptor';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    UsersModule,
+    SecurityModule
   ],
-  controllers: [SecurityController],
-  providers: [SecurityService],
+  providers: [{
+    provide: APP_INTERCEPTOR,
+    useClass: JwtInterceptor,
+  },],
 })
-export class AppModule {}
+export class AppModule { }
 
